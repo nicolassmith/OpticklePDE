@@ -1,4 +1,4 @@
-function par = paramPDE(par)
+function par = paramPDE(par,Pin)
 
 %Constants
 lambda = 1064e-9;
@@ -44,7 +44,7 @@ par.EY.pos = -par.dDARM + par.dCARM;
 bsmismatch = 0.01;
 itmmismatch = 10e-6;
 Titm = 800e-6;
-Tetm = 10e-6;
+Tetm = 3e-6;
 par.BS.T = 0.5 - bsmismatch;
 par.IX.T = Titm + itmmismatch/2;
 par.IY.T = Titm - itmmismatch/2;
@@ -78,12 +78,35 @@ par.ITM.w = 2*pi*0.7; %fix until we actually measure
 par.IX.w = par.ITM.w;
 par.IY.w = par.ITM.w;
 par.BS.w = par.ITM.w;
+par.ITM.w_internal = 2*pi*27.5e3;
+par.IX.w_internal = par.ITM.w_internal;
+par.IY.w_internal = par.ITM.w_internal;
+par.BS.w_internal = par.ITM.w_internal;
 
 par.ETM.w = 2*pi*10;
 par.EX.w = par.ETM.w;
 par.EY.w = par.ETM.w;
+par.ETM.w_internal = 2*pi*140e3;
+par.EX.w_internal = par.ETM.w_internal;
+par.EY.w_internal = par.ETM.w_internal;
 
-par.ITM.mass = 1;
+par.ITM.Q_pendulum = 1;
+par.ITM.Q_internal = 1e6;
+par.IX.Q_pendulum = par.ITM.Q_pendulum;
+par.IY.Q_pendulum = par.ITM.Q_pendulum;
+par.BS.Q_pendulum = par.ITM.Q_pendulum;
+par.IX.Q_internal = par.ITM.Q_internal;
+par.IY.Q_internal = par.ITM.Q_internal;
+par.BS.Q_internal = par.ITM.Q_internal;
+
+par.ETM.Q_pendulum = 1;
+par.ETM.Q_internal = 1e6;
+par.EX.Q_pendulum = par.ETM.Q_pendulum;
+par.EY.Q_pendulum = par.ETM.Q_pendulum;
+par.EX.Q_internal = par.ETM.Q_internal;
+par.EY.Q_internal = par.ETM.Q_internal;
+
+par.ITM.mass = .25;
 par.ETM.mass = 10^-3;
 par.ETM.massdiff = 0;
 par.IX.mass = par.ITM.mass;
@@ -91,6 +114,14 @@ par.IY.mass = par.ITM.mass;
 par.BS.mass = par.ITM.mass;
 par.EX.mass = par.ETM.mass;
 par.EY.mass = par.ETM.mass - par.ETM.massdiff;
+
+par.ITM.mass_internal = par.ITM.mass;
+par.ETM.mass_internal = par.ETM.mass;
+par.IX.mass_internal = par.ITM.mass_internal;
+par.IY.mass_internal = par.ITM.mass_internal;
+par.BS.mass_internal = par.ITM.mass_internal;
+par.EX.mass_internal = par.ETM.mass_internal;
+par.EY.mass_internal = par.ETM.mass_internal - par.ETM.massdiff;
 
 %Yaw
 par.ITM.w_pit = 2*pi*1; %fix until we actually measure
@@ -130,6 +161,9 @@ par.EY.moment = par.ETM.moment;
 %% Basic Laser Parameters, Noise is calculated after TF of couplings
 
 par.PSL.Pin = 4;
+if nargin>1
+    par.PSL.Pin = Pin;
+end
 par.PSL.Mod_f1 = 25e6;
 par.PSL.Mod_order1 = 1; % ignore 2*w sidebands
 par.PSL.Mod_g1 = 0.3; %we need to measure this sometime in one arm mode or with a detuned cavity.

@@ -35,14 +35,20 @@ for n = 1:length(mirrorList)
   % add the mirror
   if strmatch(name,'BS')
     opt = addBeamSplitter(opt, name, 45, 1 / p.ROC, p.T, p.L, p.Rar, MirrorPowerloss);
-    opt = setMechTF(opt,name,zpk([], -p.w * dampRes, 1 / p.mass),1);
-    opt = setMechTF(opt,name,zpk([], -p.w_pit * dampRes, 1 / p.moment),2);
   else
     opt = addMirror(opt,name, 0,1/p.ROC,p.T,p.L,p.Rar,MirrorPowerloss);
-    opt = setMechTF(opt,name,zpk([], -p.w * dampRes, 1 / p.mass),1);
-    opt = setMechTF(opt,name,zpk([], -p.w_pit * dampRes, 1 / p.moment),2) ;   
   end
   
+  dampResQ = @(Q) [1/Q+1i,1/Q-1i];
+  mechTF = zpk([], -p.w * dampResQ(p.Q_pendulum), 1 / p.mass);
+  % add the internal mode to the TF
+  mechTF = mechTF + zpk([], -p.w_internal * dampResQ(p.Q_internal), 1 / p.mass_internal);
+  
+  % piston tf
+  opt = setMechTF(opt,name,mechTF,1);
+  
+  % pit tf  
+  opt = setMechTF(opt,name,zpk([], -p.w_pit * dampRes, 1 / p.moment),2) ;   
 end
  
 %Link from Mod1 to BS front output
