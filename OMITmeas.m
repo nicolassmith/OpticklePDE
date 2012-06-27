@@ -7,28 +7,34 @@ addpath('~/ligo/sim/Optickle/lib')
 addpath('/home/nicolas/git/optickle-tutorial/lib')
 
 
+powers = [2 1 .5 .2];
+PMtoXTRANS={};
+
+%% calculate
+for P0=powers
+
 % this creates opt and par (setupPDE)
-par = paramPDE([],1);
+par = paramPDE([],P0);
 par = paramPDE_LSC(par);
 opt = optPDE(par);
 opt = probesPDE(opt,par);
 
 % choose detuning
-
-IX = getOptic(opt,'IX');
-g = 1/(4*pi)*par.IX.T*opt.lambda/2; % detuning (in meters)
-
 f_internal = par.IX.w_internal/(2*pi);
-g_f = g*opt.c/(opt.lambda*par.Length.Xarm);
+
+fudgeDetune = -0.075;
 
 pos = zeros(1,opt.Ndrive);
-delta = f_internal/g_f;
-pos(getDriveNum(opt,'EX')) = delta*g; %detuning of EX
-pos(getDriveNum(opt,'EY')) = delta*g; %detuning of EY
+delta = f_internal/opt.c*(opt.lambda*par.Length.Xarm)*(1+fudgeDetune); %detuning in meters
+pos(getDriveNum(opt,'EX')) = delta; %detuning of EX
+pos(getDriveNum(opt,'EY')) = delta; %detuning of EY
 
 % calculate TFs
-%f = logspace(4,log10(2e5),1000);
-f = linspace(f_internal-5,f_internal+5,1000);
+
+zoomPlotWidth = 2;
+
+f = sort([logspace(4,5,100)  linspace(f_internal-zoomPlotWidth/2,f_internal+zoomPlotWidth/2,1000)]);
+
 [fDC, sigDC, sigAC] = tickle(opt, pos, f);
 
 % show results
@@ -37,12 +43,53 @@ showfDC(opt,fDC)
 nPM = getDriveNum(opt,'PM');
 nTransX = getProbeNum(opt,'X_TRANS_DC');
 
-PMtoXTRANS = -getTF(sigAC,nTransX,nPM);
+PMtoXTRANS = [PMtoXTRANS {-getTF(sigAC,nTransX,nPM)/P0}];
+end
 
+
+%% make plots
 figure(1)
-subplot(2,1,1)
-semilogy(f,abs(PMtoXTRANS))
+set(gcf,'Color','white')
+set(gcf,'Position',[0 0 1400 700])
+colors = get(gca,'colororder');
+legs = cell(length(powers),1);
+clf
+for jj = 1:length(powers)
+subplot(2,2,1)
+loglog(f,abs(PMtoXTRANS{jj}),'Color',colors(jj,:))
+hold on
 xlim([min(f) max(f)])
-subplot(2,1,2)
-plot(f,180/pi*angle(PMtoXTRANS))
+subplot(2,2,3)
+semilogx(f,180/pi*angle(PMtoXTRANS{jj}),'Color',colors(jj,:))
+hold on
 xlim([min(f) max(f)])
+
+% plot zoom in
+
+f_subset = f<f_internal+zoomPlotWidth/2&f>f_internal-zoomPlotWidth/2;
+fzoom = f(f_subset)-f_internal;
+subplot(2,2,2)
+semilogy(fzoom,abs(PMtoXTRANS{jj}(f_subset)),'Color',colors(jj,:))
+hold on
+xlim([min(fzoom) max(fzoom)])
+subplot(2,2,4)
+plot(fzoom,180/pi*angle(PMtoXTRANS{jj}(f_subset)),'Color',colors(jj,:))
+hold on
+xlim([min(fzoom) max(fzoom)])
+legs{jj} = ['Input Power = ' num2str(powers(jj)) 'W'];
+end
+
+
+subplot(2,2,1)
+title('EOM drive to X arm transmission, normalized by input power')
+ylabel('Transfer function magnitude (1/radians)')
+legend(legs,'Location','NE')
+subplot(2,2,3)
+ylabel('Phase (degrees)')
+xlabel('Frequency (Hz)')
+subplot(2,2,2)
+title('Zoom on OMIT dip')
+subplot(2,2,4)
+xlabel('Frequency (Hz)')
+
+export_fig('opticleomit.pdf')
