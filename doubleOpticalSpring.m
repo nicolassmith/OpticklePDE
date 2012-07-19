@@ -7,12 +7,12 @@ addpath('~/ligo/sim/Optickle/lib')
 addpath('/home/nicolas/git/optickle-tutorial/lib')
 
 % set laser powers
-Pc = 4;
-Ps = Pc/20;
+Pc = 7;
+Ps = 0*Pc/20;
 
 % set detunings
-deltac = 0.5;
-deltas = 0;
+deltac = 3;
+deltas = -.3;
 
 % this creates opt and par (setupPDE)
 par = paramPDE([],Pc);
@@ -28,7 +28,7 @@ par.PSL.vFrf = [par.PSL.vFrf;fSubcarrier;-fSubcarrier];
 par.PSL.vArf = [par.PSL.vArf;sqrt(Ps);0];
 
 % make opt
-opt = optPDE(par);
+opt = optPDE(par,RFmodulator('armMod',fSubcarrier,.003));
 opt = probesPDE(opt,par);
 
 % set detuning

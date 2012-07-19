@@ -1,4 +1,4 @@
-function opt = optPDE(par)
+function opt = optPDE(par,xArmObject)
 
 %% Model and PSL
 
@@ -63,7 +63,16 @@ opt = addLink(opt, 'IX', 'bk', 'BS', 'frB', par.Length.IY);
 opt = addLink(opt, 'IY', 'bk', 'BS', 'bkB', par.Length.IX);
 
 %add arm links
-opt = addLink(opt,'IX','fr','EX','fr',par.Length.Xarm);
+
+if nargin<2
+    opt = addLink(opt,'IX','fr','EX','fr',par.Length.Xarm);
+else
+    % insert RF modulator into x arm
+    opt = addOptic(opt,xArmObject);
+    opt = addLink(opt,'IX','fr',xArmObject.name,'in',par.Length.Xarm);
+    opt = addLink(opt,xArmObject.name,'out','EX','fr',0);
+    
+end
 opt = addLink(opt,'EX','fr','IX','fr',par.Length.Xarm);
 
 opt = addLink(opt,'IY','fr','EY','fr',par.Length.Yarm);
