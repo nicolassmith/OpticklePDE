@@ -90,7 +90,7 @@ par.ETM.w_internal = 2*pi*140e3;
 par.EX.w_internal = par.ETM.w_internal;
 par.EY.w_internal = par.ETM.w_internal;
 
-par.ITM.Q_pendulum = 1;
+par.ITM.Q_pendulum = 1e6;
 par.ITM.Q_internal = 1e6;
 par.IX.Q_pendulum = par.ITM.Q_pendulum;
 par.IY.Q_pendulum = par.ITM.Q_pendulum;
@@ -99,7 +99,7 @@ par.IX.Q_internal = par.ITM.Q_internal;
 par.IY.Q_internal = par.ITM.Q_internal;
 par.BS.Q_internal = par.ITM.Q_internal;
 
-par.ETM.Q_pendulum = 1;
+par.ETM.Q_pendulum = 1e6;
 par.ETM.Q_internal = 1e6;
 par.EX.Q_pendulum = par.ETM.Q_pendulum;
 par.EY.Q_pendulum = par.ETM.Q_pendulum;
