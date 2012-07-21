@@ -43,7 +43,7 @@ fdelta = deltac*fGamma; %detuning
 pos(getDriveNum(opt,'EX')) = -fdelta/c*(opt.lambda*par.Length.Xarm); %detuning of EX in meters
 
 % tickle
-f = logspace(log10(500)*0-1,4,500).';
+f = logspace(log10(500),4,500).';
 
 [fDC, sigDC, sigAC, mMech] = tickle(opt, pos, f);
 
@@ -58,11 +58,15 @@ subplot(2,1,1)
 loglog(f,abs(springTF))
 xlim([min(f) max(f)])
 grid on
+title('ETM radiation pressure modified mechanical response')
+ylabel('Magnitude (m/N)')
 subplot(2,1,2)
 semilogx(f,180/pi*angle(springTF))
 xlim([min(f) max(f)])
-ylim([-180 180])
+ylim([-200 200])
 grid on
+ylabel('Phase (deg)')
+xlabel('Frequency (Hz)')
 
 % evaluate modulation deph in terms of meters
 disp(['Modulation = ' num2str(modGamma*opt.lambda/(4*pi)) 'm'])
