@@ -1,20 +1,15 @@
 % This function will search for the minimum modulation required for a
 % stable intracavity modulated double optical spring
 function doubleSpringSearch()
-    addpath('~/ligo/sim/Optickle/')
-    addpath('~/ligo/sim/Optickle/lib')
-    addpath('/home/nicolas/git/optickle-tutorial/lib')
-    
-    
     % do a fminsearch
 
-    %x0 = [.0001,14.2]; % starting modulation and detuning
+    x0 = [.001,2.63]; % starting modulation and detuning
     
-    %x = fminsearch(@minModulation,x0);
+    x = fminsearch(@minModulation,x0);
     
-    %disp(['Modulation = ' num2str(x(1)) ', detuning = ' num2str(x(2))])
+    disp(['Modulation = ' num2str(x(1)) ', detuning = ' num2str(x(2))])
     
-    minModulation([3.3198e-5 14.2552])
+    %minModulation([3.3198e-5 14.2552])
     
 end
 
@@ -25,7 +20,7 @@ function cost = minModulation(args)
     delta = args(2);
 
     % frequency
-    f = logspace(2,log10(300),20).';
+    f = logspace(3,log10(3000),20).';
     
     
     % set laser powers
@@ -40,7 +35,7 @@ function cost = minModulation(args)
     c = 299792458;
     fGamma = c*par.IX.T/(8*pi*par.Length.Xarm);
 
-    fSubcarrier = par.ETM.w_internal/(2*pi);
+    fSubcarrier = par.ITM.w_internal/(2*pi);
 
     par.PSL.vFrf = [par.PSL.vFrf;fSubcarrier;-fSubcarrier];
     par.PSL.vArf = [par.PSL.vArf;sqrt(Ps);0];

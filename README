@@ -1,1 +1,18 @@
 PDE Optickle Model
+
+description of some scripts:
+
+OMITmeas.m - shows an Optickle transfer function from a phase modulator 
+to arm transmission while detuned, for showing the OMIT effect.
+
+doubleOpticalSpring.m - Calculates the ETM modified mechanical response
+due to radiation pressure effects given a certain amount of intra cavity 
+modulation.
+
+doubleSpringSearch.m - This will find the detuning that minimizes 
+the amount of modulation needed to produce a stable double optical spring.
+
+cucmberPDE.m - creates a cucumber (lentickle model) for PDE.
+
+PDEloopgains.m - calculates the open loop transfer functions of the 
+various length control loops using lentickle.

@@ -1,17 +1,11 @@
 % Optickle Simulation of Double Optical Spring
 
-% add optickle to path and Tobin's useful scripts
-
-addpath('~/ligo/sim/Optickle/')
-addpath('~/ligo/sim/Optickle/lib')
-addpath('/home/nicolas/git/optickle-tutorial/lib')
-
 % set laser powers
 Pc = 4;
 Ps = 0;
 
 % set detunings
-deltac = 14.1552;
+deltac = 2.63;
 %deltas = -.3;
 
 % this creates opt and par (setupPDE)
@@ -23,13 +17,13 @@ c = 299792458;
 fGamma = c*par.IX.T/(8*pi*par.Length.Xarm);
 
 %fSubcarrier = (deltas-deltac)*fGamma;
-fSubcarrier = par.ETM.w_internal/(2*pi);
+fSubcarrier = par.ITM.w_internal/(2*pi);
 
 par.PSL.vFrf = [par.PSL.vFrf;fSubcarrier;-fSubcarrier];
 par.PSL.vArf = [par.PSL.vArf;sqrt(Ps);0];
 
 % choose mod depth
-modGamma = 10e-5;
+modGamma = 3.9e-4;
 
 % make opt
 opt = optPDE(par,RFmodulator('armMod',fSubcarrier,1i*modGamma));
@@ -48,7 +42,7 @@ fdelta = deltac*fGamma; %detuning
 pos(getDriveNum(opt,'EX')) = -fdelta/c*(opt.lambda*par.Length.Xarm); %detuning of EX in meters
 
 % tickle
-f = logspace(2,3,500).';
+f = logspace(3,log10(4000),500).';
 
 [fDC, sigDC, sigAC, mMech] = tickle(opt, pos, f);
 

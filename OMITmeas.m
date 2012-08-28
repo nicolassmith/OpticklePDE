@@ -1,12 +1,5 @@
 % Optickle Simulation of OMIT style measurement
 
-% add optickle to path and Tobin's useful scripts
-
-addpath('~/ligo/sim/Optickle/')
-addpath('~/ligo/sim/Optickle/lib')
-addpath('/home/nicolas/git/optickle-tutorial/lib')
-
-
 powers = [2 1 .5 .2];
 PMtoXTRANS={};
 PMtoREFL={};
@@ -97,7 +90,7 @@ title('Zoom on OMIT dip')
 subplot(2,2,4)
 xlabel('Frequency (Hz)')
 
-export_fig('opticleomit.pdf')
+%export_fig('opticleomit.pdf')
 % 
 % figure(2)
 % set(gcf,'Color','white')
