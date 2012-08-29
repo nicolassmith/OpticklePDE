@@ -56,7 +56,7 @@ function cucumber = cucumberPDE(opt,pos)
     
     
                % REFLI REFLQ ASI ASQ XTRN YTRN
-    sensDof = [1     0   0   0    0    0   % CML
+    sensDof =   [    1     0   0   0    0    0   % CML
                      1     0   0   0    0    0   % CMF
                      0     0   0   1    0    0   % DARM
                      0     1   0   0    0    0]; % MICH

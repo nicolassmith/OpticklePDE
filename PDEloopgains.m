@@ -1,4 +1,3 @@
-run ~/git/lentickle/setupLentickle
 
 % make opt
 par = paramPDE([],1);
@@ -8,7 +7,8 @@ opt = probesPDE(opt,par);
 
 cucumber = cucumberPDE(opt);
 
-f = logspace(0,4,500);
+fHigh = 30000; fLow = 1;
+f = logspace(log10(fLow),log10(fHigh),500).';
 
 results = lentickleEngine(cucumber,[],f).';
 
@@ -31,6 +31,7 @@ for olTF = DOFol
     loglog(f,abs(olTF{:}))
 end
 ylim([1e-5 1e7])
+xlim([fLow fHigh])
 grid on
 subplot(2,1,2)
 semilogx(f,angle(REFLol)*180/pi)
@@ -39,7 +40,8 @@ for olTF = DOFol
     semilogx(f,angle(olTF{:})*180/pi)
 end
 ylim([-180 180])
+xlim([fLow fHigh])
 grid on
 
 subplot(2,1,1)
-legend(['REFL' dofs])
+legend(['REFL' dofs],'location','best')

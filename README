@@ -16,3 +16,5 @@ cucmberPDE.m - creates a cucumber (lentickle model) for PDE.
 
 PDEloopgains.m - calculates the open loop transfer functions of the 
 various length control loops using lentickle.
+
+PDEnoisecoupling.m - example for calculating laser intensity noise coupling
